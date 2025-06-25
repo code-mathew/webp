@@ -7,7 +7,7 @@
 }
 
 body {
-    cursor: url('/images/pointer.png') 0 0, auto;
+    cursor: url('./images/pointer.png') 0 0, auto;
     font-family: "Jost", sans-serif;
 }
 
