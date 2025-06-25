@@ -13,7 +13,7 @@ body {
 
 a:hover,
 button:hover {
-    cursor: url('/images/hand.png') 0 0, auto;
+    cursor: url('../images/hand.png') 0 0, auto;
 }
 
 .navbar-brand {
