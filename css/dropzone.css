@@ -1,0 +1,79 @@
+.dropzone {
+    border: 1px dashed #fff;
+    border-radius: 10px;
+    background-color: transparent;
+    padding: 0;
+}
+.dropzone .dz-message{
+    color: #fff;
+    margin-top: 3.5rem;
+}
+.dropzone .dz-preview .dz-remove{
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    margin-top: 0;    
+    z-index: 100;
+}
+.dropzone .dz-preview .dz-remove i,
+.dropzone.dz-clickable,.dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message *{
+    cursor:url('/images/hand.png') 0 0, auto;
+}
+.dropzone.dz-clickable *{
+    cursor: url('/images/pointer.png') 0 0, auto;
+}
+.dropzone .dz-preview .dz-details .dz-filename{
+    white-space: break-spaces;
+}
+.dropzone .dz-preview .dz-image img{
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.dz-progress {
+    display: none !important;
+}
+.dropzone .dz-preview.dz-image-preview{
+    background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 20px 10px rgba(255, 255, 255, 0.1);
+}
+
+
+ #preview img {
+      max-width: 200px;
+      display: block;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+    }
+    .preview-box {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+    }
+    .download-btn {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      text-decoration: none;
+    }
+
+
+     #convertMoreBtn {
+      display: none;
+      margin-top: 20px;
+    }

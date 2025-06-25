@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WEBP</title>
+    <link rel="icon" href="./images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/gradient.css">
+    <link rel="stylesheet" href="css/dropzone.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="gradient-bg">
+        <svg xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="goo">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"
+                        result="goo" />
+                    <feBlend in="SourceGraphic" in2="goo" />
+                </filter>
+            </defs>
+        </svg>
+        <div class="gradients-container">
+            <div class="g1"></div>
+            <div class="g2"></div>
+            <div class="g3"></div>
+            <div class="g4"></div>
+            <div class="g5"></div>
+            <div class="interactive"></div>
+        </div>
+    </div>
+    <!-- loader -->
+    <div id="loader-overlay">
+        <div id="loader-modal">
+            <div id="lottie" style="width: 500px; height: 500px;"></div>
+            <p style="color: #fff; font-weight:500;">Compressing...</p>
+        </div>
+    </div>
+    <section id="page-content">
+        <header>
+            <nav class="navbar bg-transparent">
+                <div class="container">
+                    <a class="navbar-brand glitch" data-text="Webp" href="#">
+                        Webp
+                    </a>
+                </div>
+            </nav>
+        </header>
+        <main class="container">
+            <div class="row">
+                <div class="col-12 hero-content text-center">
+                    <h3>Convert any</h3>
+                    <h3 class="title-glitch" title="webp">Image to webp</h3>
+                    <p>Convert any image files to compressed Webp format for free!</p>
+                </div>
+                <div class="col-12">
+                    <div class="card convert-card glass-card">
+                        <div class="card-body">
+                            <form class="dropzone" id="my-dropzone"></form>
+                        </div>
+                        <button id="convertBtn" class="btn btn-glass mx-auto mt-3 text-white">Convert to WebP <i
+                                class="fa-solid fa-arrow-right ms-2"></i></button>
+                        <div id="preview" class="card-body">
+                            <ul class="compressed-list">
+                                <!-- <li class="item">
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://placehold.co/80x80" alt="compressed image">
+                                        <h6>image name</h6>
+                                    </div>
+                                    <p>size</p>
+                                    <p class="text-success">compressed 12%</p>
+                                </li> -->
+                            </ul>
+                        </div>
+                        <div class="d-flex justify-content-center flex-wrap gap-3">
+                            <button id="convertMoreBtn" class="btn btn-glass my-3 text-white">Convert More
+                                Files <i class="fa-solid fa-arrow-right ms-2"></i></button>
+                            <button id="downloadZipBtn" class="btn btn-glass my-3 text-white"
+                                style="display: none;">Download All <i class="fa-regular fa-file-zipper ms-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.0/lottie.min.js"></script>
+    <!-- JSZip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- FileSaver (to save .zip) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="js/gradient.js"></script>
+
+    <!-- dropzone.js -->
+    <script>
+        Dropzone.autoDiscover = false;
+
+        let imageFiles = [];
+        let dropzoneInstance;
+
+        function initDropzone() {
+            imageFiles = []; // reset
+
+            dropzoneInstance = new Dropzone("#my-dropzone", {
+                url: "#",
+                dictDefaultMessage: "Drag & drop your images here or click to upload",
+                autoProcessQueue: false,
+                addRemoveLinks: true,
+                dictRemoveFile: '<i class="fa-solid fa-circle-xmark text-white"></i>',
+                acceptedFiles: "image/*",
+                init: function () {
+                    this.on("addedfile", function (file) {
+                        if (!file.type.startsWith("image/")) {
+                            this.removeFile(file);
+                            alert("Only image files are allowed!");
+                        } else {
+                            imageFiles.push(file);
+                        }
+                    });
+
+                    this.on("removedfile", function (file) {
+                        imageFiles = imageFiles.filter(f => f.name !== file.name);
+                    });
+                }
+            });
+        }
+
+        initDropzone(); // initial load
+
+        document.getElementById("convertBtn").addEventListener("click", async () => {
+            if (imageFiles.length === 0) {
+                alert("Please add image files first.");
+                return;
+            }
+            showLoader();
+            document.getElementById("my-dropzone").style.display = "none";
+            document.getElementById("convertBtn").style.display = "none";
+            const previewContainer = document.getElementById("preview");
+            previewContainer.innerHTML = '';
+            const zip = new JSZip();
+            const folder = zip.folder("webp-images");
+            for (const file of imageFiles) {
+                try {
+                    const options = {
+                        maxSizeMB: 1,
+                        maxWidthOrHeight: 1920,
+                        fileType: 'image/webp'
+                    };
+                    const compressedFile = await imageCompression(file, options);
+                    const blobData = await compressedFile.arrayBuffer(); // for zip
+                    const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
+                    folder.file(`${nameWithoutExt}.webp`, blobData);
+                    const sizeKB = (compressedFile.size / 1024).toFixed(1);
+                    const originalSizeKB = (file.size / 1024).toFixed(1);
+                    const reduction = (((file.size - compressedFile.size) / file.size) * 100).toFixed(1);
+                    const webpURL = URL.createObjectURL(compressedFile);
+
+                    const previewContainer = document.getElementById("preview");
+
+                    const li = document.createElement('li');
+                    li.className = 'item';
+
+                    li.innerHTML = `
+  <div class="d-flex align-items-center w-50">
+    <img src="${webpURL}" alt="compressed image">
+    <h6>${nameWithoutExt}.webp</h6>
+  </div>
+  <p style="width:100px;">${sizeKB} KB</p>
+  <p class="text-success">Compressed ${reduction}%</p>
+  <a href="${webpURL}" class="download-btn" download="${nameWithoutExt}.webp"><i class="fa-regular fa-circle-down"></i></a>
+`;
+
+                    let ul = previewContainer.querySelector('.compressed-list');
+                    if (!ul) {
+                        ul = document.createElement('ul');
+                        ul.className = 'compressed-list';
+                        previewContainer.appendChild(ul);
+                    }
+
+                    ul.appendChild(li);
+                    // const compressedFile = await imageCompression(file, options);
+                    // const webpURL = URL.createObjectURL(compressedFile);
+                    // const sizeKB = (compressedFile.size / 1024).toFixed(1);
+
+                    // const box = document.createElement('div');
+                    // box.className = 'preview-box';
+
+                    // const img = document.createElement('img');
+                    // img.src = webpURL;
+                    // img.alt = file.name;
+
+                    // const filename = document.createElement('div');
+                    // const originalSizeKB = (file.size / 1024).toFixed(1);
+                    // const reduction = (((file.size - compressedFile.size) / file.size) * 100).toFixed(1);
+                    // const nameWithoutExt = file.name.replace(/\.[^/.]+$/, ''); // remove extension
+                    // filename.textContent = `${nameWithoutExt}.webp (${sizeKB} KB, saved ${reduction}%)`;
+
+                    // const downloadLink = document.createElement('a');
+                    // downloadLink.href = webpURL;
+                    // downloadLink.download = file.name.replace(/\.\w+$/, '') + '.webp';
+                    // downloadLink.textContent = "Download WebP";
+                    // downloadLink.className = 'download-btn';
+
+                    // box.appendChild(img);
+                    // box.appendChild(filename);
+                    // box.appendChild(downloadLink);
+                    // previewContainer.appendChild(box);
+                } catch (err) {
+                    console.error("Compression failed for:", file.name, err);
+                }
+            }
+            hideLoader();
+            // Enable the download ZIP button
+            document.getElementById("downloadZipBtn").style.display = "inline-block";
+
+            // Button click to download the zip
+            document.getElementById("downloadZipBtn").onclick = async () => {
+                const content = await zip.generateAsync({ type: "blob" });
+                saveAs(content, "compressed_images.zip");
+            };
+            // After conversion, hide Dropzone and Convert button, show "Convert More"
+
+            document.getElementById("convertMoreBtn").style.display = "inline-block";
+        });
+
+        // Reinitialize Dropzone on "Convert More Files"
+        document.getElementById("convertMoreBtn").addEventListener("click", () => {
+            Dropzone.forElement("#my-dropzone").destroy(); // destroy old instance
+            document.getElementById("my-dropzone").style.display = "block";
+            document.getElementById("convertBtn").style.display = "inline-block";
+            document.getElementById("convertMoreBtn").style.display = "none";
+            document.getElementById("downloadZipBtn").style.display = "none";
+            document.getElementById("preview").innerHTML = '';
+            initDropzone();
+        });
+    </script>
+
+    <script>
+        // Load Lottie animation
+        const animation = lottie.loadAnimation({
+            container: document.getElementById('lottie'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: false,
+            path: 'https://lottie.host/5b833b61-c106-4fc6-b906-a04c7b5ff688/tY8tO7PxEL.json' // Replace with any loader JSON
+        });
+
+        function showLoader() {
+            document.getElementById('loader-overlay').style.display = 'flex';
+            document.getElementById('convertBtn').disabled = true;
+            document.getElementById('page-content').classList.add('blur-overlay');
+            animation.play();
+        }
+
+        function hideLoader() {
+            document.getElementById('loader-overlay').style.display = 'none';
+            document.getElementById('convertBtn').disabled = false;
+            document.getElementById('page-content').classList.remove('blur-overlay');
+            animation.stop();
+        }
+    </script>
+</body>
+
+</html>
